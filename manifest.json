@@ -15,15 +15,17 @@
     },
 
     "background": {
-        "scripts": ["js/saveImageEvent.js" ],
-        "persistent": false
+        "scripts": ["js/saveImageEvent.js" ]
     },
 
-    "options_page": "options.html",
+    "options_ui": {
+        "page": "options.html"
+    },
 
     "permissions":[
         "storage",
         "contextMenus",
-        "downloads"
+        "downloads",
+        "tabs"
     ]
 }

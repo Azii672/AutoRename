@@ -1,4 +1,4 @@
-chrome.contextMenus.create({
+browser.contextMenus.create({
     "id": "saveImage,",
     "title": "Save image as (AutoRename)",
     "contexts": ["image"]
@@ -118,8 +118,8 @@ function NotSupportedNotify() {
 }
 
 /* Execute everything when save image as is clicked. */
-chrome.contextMenus.onClicked.addListener(function (info, tab) {
-
+browser.contextMenus.onClicked.addListener(function(info, tab) {
+    
     const currentUrl = tab.url;
     const currentUrlSplit = currentUrl.split("/");
     const currentWebsite = currentUrlSplit[2];
@@ -135,7 +135,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 });
 
 function SaveTwitterImageFile(info, urlSplit) {
-    chrome.storage.local.get({
+    browser.storage.local.get({
         fileNameStringLength: "8",
         showMentionSymbol: true,
         showTweetId: true,
@@ -179,20 +179,20 @@ function SaveTwitterImageFile(info, urlSplit) {
 
 /* Chrome Download API Manager */
 function FileDownloadManager(urlName) {
-    chrome.downloads.download({
+    browser.downloads.download({
         url: urlName,
         filename: CreateFileName(),
         saveAs: true
     });
 }
 
-chrome.downloads.onChanged.addListener(function (downloadDelta) {
-    chrome.storage.local.get({
+browser.downloads.onChanged.addListener(function (downloadDelta) {
+    browser.storage.local.get({
         showDownloadFolderCheckbox: false
     }, function (items) {
         if (downloadDelta.state && downloadDelta.state.current == "complete"){
             if (items.showDownloadFolderCheckbox === true){
-                chrome.downloads.showDefaultFolder();
+                browser.downloads.showDefaultFolder();
             }
             return;              
         }
