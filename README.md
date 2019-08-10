@@ -4,20 +4,18 @@
       height="35"
       width="35">
 </sub>
-AutoRename for Edge and Chrome
+AutoRename for Firefox
 </h1>
 <p align="center">
 Download now
 <br>
-<a href="https://chrome.google.com/webstore/detail/autorename/gjmkdopdnkblnjbadmccmjpjpjcechgm">Chrome Web Store</a>
-|
-Microsoft Store (coming soon)
+Mozilla Add-ons (Coming soon)</a>
 <h1></h1>
 </p>
 
 **Automatically rename downloaded images from the internet**
 
-This Chromium extension is designed to automatically rename files using custom parameters to keep your files more organized. Normally, when you download files from the internet, file names are often scrambled with random words and numbers that don't mean anything. 
+This Firefox Add-on is designed to automatically rename files using custom parameters to keep your files more organized. Normally, when you download files from the internet, file names are often scrambled with random words and numbers that don't mean anything. 
 
 At the moment, this extension only supports Twitter. The screenshots below is an example of how this extension works. 
 
@@ -40,6 +38,10 @@ These parameters can be customized in the Extension Options.
 ## Bug Report or Feature Suggestion
 
 If you have a bug report or a feature that you want to see implemeneted, kindly go to Issues and submit a post there.
+
+## Firefox Branch
+
+This branch contain specific code for Firefox  while the `master` branch will only target Chromium based browsers. Changes or pull requests for Firefox must be pushed to this branch only. Lastly, any feature that was made in this branch or `master` must be shared across both branches.
 
 ## MIT License
 
