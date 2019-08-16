@@ -1,8 +1,14 @@
 browser.contextMenus.create({
-    "id": "saveImage,",
+    "id": "saveImage",
     "title": "Save image as (AutoRename)",
     "contexts": ["image"]
 });
+
+browser.contextMenus.create({
+    "id": "viewOriginalImageSizeContextMenuItem",
+    "title": "View Original Image",
+    "contexts": ["image"]
+    });
 
 /* Enums of Supported sites by this extension */
 const Website = {
@@ -109,32 +115,49 @@ function CreateFileName() {
     return finalFileName;
 }
 
-function ClickTweetNotify() {
-    return "Click on the tweet to use this extension.";
-}
-
 function NotSupportedNotify() {
     return "Sorry, this extension only supports Twitter at this time. For a list of supported websites, visit my Github repository: https://github.com/ddasutein/AutoRename";
 }
 
 /* Execute everything when save image as is clicked. */
-browser.contextMenus.onClicked.addListener(function(info, tab) {
-    
+browser.contextMenus.onClicked.addListener(function (info, tab) {
+
     const currentUrl = tab.url;
     const currentUrlSplit = currentUrl.split("/");
     const currentWebsite = currentUrlSplit[2];
-    
+
     switch (currentWebsite) {
         case Website.Twitter:
-            SaveTwitterImageFile(info, currentUrlSplit);
+
+            if (info.menuItemId === "viewOriginalImageSizeContextMenuItem"){
+                ParseOriginalMediaUrl(info.srcUrl);
+                ViewTwitterOriginalImageTab();
+                return;
+            } 
+            else if (info.menuItemId === "saveImage"){
+                SaveTwitterImage(info, currentUrlSplit);
+            }
             break;
         default:
             alert(NotSupportedNotify());
             break;
     }
+
 });
 
-function SaveTwitterImageFile(info, urlSplit) {
+/* ---------------------FUNCTIONS FOR TWITTER------------------------ */
+
+function ClickTweetNotify() {
+    return "Click on the tweet to use this extension.";
+}
+
+function ViewTwitterOriginalImageTab(){
+    browser.tabs.create({
+        url: finalUrlOutput
+      });
+}
+
+function SaveTwitterImage(info, urlSplit) {
     browser.storage.local.get({
         fileNameStringLength: "8",
         showMentionSymbol: true,
@@ -172,29 +195,71 @@ function SaveTwitterImageFile(info, urlSplit) {
             alert(ClickTweetNotify());
             return;
         } else {
-            FileDownloadManager(info.srcUrl);
+            ParseOriginalMediaUrl(info.srcUrl);
+            FileDownloadManager(Website.Twitter);
         }
     });
 }
 
+let finalUrlOutput = null;
+
+function ParseOriginalMediaUrl(url){
+
+    const DEBUG_TAG = "ParseOriginalMediaUrl => ";
+
+    const originalUrl = url;
+    const twitterLargeImage = "&name=orig";
+    const getTwitterImageFormat = originalUrl.substring(0, originalUrl.lastIndexOf("&name=") + 0);
+    const updatedUrl = getTwitterImageFormat + twitterLargeImage;
+    let finalImageSource = null;
+
+    const regex_size = "&name=";
+    
+    if (originalUrl.includes(regex_size)){
+        // If the user is using the Redesign
+        finalImageSource = updatedUrl;
+    }else {
+        // If user is on the legacy design
+        finalImageSource = originalUrl;
+    }
+
+    console.log(DEBUG_TAG + "original_url: " + originalUrl);
+    console.log(DEBUG_TAG + "final_url: " + finalImageSource);
+
+    finalUrlOutput = finalImageSource;
+}
+
+/* ---------------------END OF TWITTER FUNCTIONS------------------------ */
+
 /* Chrome Download API Manager */
-function FileDownloadManager(urlName) {
-    browser.downloads.download({
-        url: urlName,
-        filename: CreateFileName(),
-        saveAs: true
-    });
+function FileDownloadManager(website) {
+
+    const DEBUG_TAG = "FileDownloadManager => ";
+
+    switch (website) {
+        case Website.Twitter:
+
+            console.log(DEBUG_TAG + "url: " + finalUrlOutput);
+            console.log(DEBUG_TAG + "fileName: " + CreateFileName());
+
+            browser.downloads.download({
+                url: finalUrlOutput,
+                filename: CreateFileName(),
+                saveAs: true
+            });
+            break;
+    }
 }
 
 browser.downloads.onChanged.addListener(function (downloadDelta) {
     browser.storage.local.get({
         showDownloadFolderCheckbox: false
     }, function (items) {
-        if (downloadDelta.state && downloadDelta.state.current == "complete"){
-            if (items.showDownloadFolderCheckbox === true){
+        if (downloadDelta.state && downloadDelta.state.current == "complete") {
+            if (items.showDownloadFolderCheckbox === true) {
                 browser.downloads.showDefaultFolder();
             }
-            return;              
+            return;
         }
     });
 });
