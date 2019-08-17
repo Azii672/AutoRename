@@ -116,7 +116,12 @@ function CreateFileName() {
 }
 
 function NotSupportedNotify() {
-    return "Sorry, this extension only supports Twitter at this time. For a list of supported websites, visit my Github repository: https://github.com/ddasutein/AutoRename";
+    browser.notifications.create({
+        "iconUrl": browser.extension.getURL("assets/AutoRename-Logo-48px.png"),
+        "type": "basic",
+        "title": "AutoRename",
+        "message": "Sorry, this extension only supports Twitter at this time. For a list of supported websites, visit my Github repository: https://github.com/ddasutein/AutoRename"
+    });
 }
 
 /* Execute everything when save image as is clicked. */
@@ -139,7 +144,7 @@ browser.contextMenus.onClicked.addListener(function (info, tab) {
             }
             break;
         default:
-            alert(NotSupportedNotify());
+            NotSupportedNotify();
             break;
     }
 
@@ -148,7 +153,12 @@ browser.contextMenus.onClicked.addListener(function (info, tab) {
 /* ---------------------FUNCTIONS FOR TWITTER------------------------ */
 
 function ClickTweetNotify() {
-    return "Click on the tweet to use this extension.";
+    browser.notifications.create({
+        "iconUrl": browser.extension.getURL("assets/AutoRename-Logo-48px.png"),
+        "type": "basic",
+        "title": "AutoRename",
+        "message": "Click on the tweet to use this extension."
+    });
 }
 
 function ViewTwitterOriginalImageTab(){
@@ -192,7 +202,7 @@ function SaveTwitterImage(info, urlSplit) {
         FileNameBuilder.randomString = GenerateRandomString(items.fileNameStringLength);
 
         if (tweetId == null) {
-            alert(ClickTweetNotify());
+            ClickTweetNotify();
             return;
         } else {
             ParseOriginalMediaUrl(info.srcUrl);

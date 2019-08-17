@@ -26,6 +26,7 @@
         "storage",
         "contextMenus",
         "downloads",
-        "tabs"
+        "tabs",
+        "notifications"
     ]
 }
